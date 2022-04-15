@@ -293,7 +293,7 @@ int main(int argc, const char *argv[]) {
 			// cout << to_string(static_cast<unsigned int>(c), 16) << '\t';
 			// cout << setw(8) << setfill('0') << to_string(static_cast<unsigned int>(c), 2) << '\t';
 			// cout << "\\x" + to_string(static_cast<unsigned int>(c), 16) << endl;
-		} else if (decimal >= 32 && decimal < 128) {
+		} else if (decimal >= 32 && decimal < 127) {
 			dec_array[count] = decimal;
 			hex_array[count] = to_string(static_cast<unsigned int>(c), 16);
 			
@@ -320,7 +320,16 @@ int main(int argc, const char *argv[]) {
 		} else {
 			dec_array[count] = decimal % 256;
 			hex_array[count] = to_string(static_cast<unsigned int>(c) % 256, 16);
-			bin_array[count] = to_string(static_cast<unsigned int>(c) % 256, 2);
+
+			if (decimal == 127) {
+				ostringstream ss;
+				ss << setw(8) << setfill('0') << to_string(static_cast<unsigned int>(c), 2);
+				string s(ss.str());
+				bin_array[count] = s;
+			} else {
+				bin_array[count] = to_string(static_cast<unsigned int>(c) % 256, 2);
+			}
+
 			printable_array[count] = "\\x" + to_string(static_cast<unsigned int>(c) % 256, 16);
 
 			// cout << static_cast<unsigned int>(c) % 256 << '\t';
@@ -332,7 +341,7 @@ int main(int argc, const char *argv[]) {
 		count ++;
 	}
 
-// 	ofstream output(argv[2]);
+	ofstream output(argv[2]);
 
 	// for (int i = 0; i < kMaxArraySize; ++i) {
 	// 	cout << byte_array[i] << endl;
@@ -345,47 +354,47 @@ int main(int argc, const char *argv[]) {
 	// 	cout << hex_array[i] << endl;
 	// }
 
-	cout << "| Printable           | Hexadecimal | Binary                              | Decimal         |" << endl;
-	cout << "|---------------------+-------------+-------------------------------------+-----------------|" << endl;
+	output << "| Printable           | Hexadecimal | Binary                              | Decimal         |" << endl;
+	output << "|---------------------+-------------+-------------------------------------+-----------------|" << endl;
 
 	for (int i = 0; i < kMaxArraySize; i+=4) {
-		cout << '|';
+		output << '|';
 		for (int j = i; j < i + 4; ++j) {
 			if (j < kMaxArraySize) {
-				cout << setw(5) << printable_array[j];
+				output << setw(5) << printable_array[j];
 			} else {
-				cout << setw(5) << ' ';
+				output << setw(5) << ' ';
 			}
 		}
 
-		cout << " |";
+		output << " |";
 		for (int j = i; j < i + 4; ++j) {
 			if (j < kMaxArraySize) {
-				cout << setw(3) << hex_array[j];
+				output << setw(3) << hex_array[j];
 			} else {
-				cout << setw(3) << ' ';
+				output << setw(3) << ' ';
 			}
 		}
 
-		cout << " |";
+		output << " |";
 		for (int j = i; j < i + 4; ++j) {
 			if (j < kMaxArraySize) {
-				cout << setw(9) << bin_array[j];
+				output << setw(9) << bin_array[j];
 			} else {
-				cout << setw(9) << ' ';
+				output << setw(9) << ' ';
 			}
 		}
 
-		cout << " |";
+		output << " |";
 		for (int j = i; j < i + 4; ++j) {
 			if (j < kMaxArraySize) {
-				cout << setw(4) << dec_array[j];
+				output << setw(4) << dec_array[j];
 			} else {
-				cout << setw(4) << ' ';
+				output << setw(4) << ' ';
 			}
 		}
 		
-		cout << " |" << endl;
+		output << " |" << endl;
 	}
 
 	return 0;
